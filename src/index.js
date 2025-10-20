@@ -75,7 +75,7 @@ const createMcpServer = () => {
       precision: z.enum(["ns", "us", "ms", "s"]).optional().describe(
         "Timestamp precision (ns, us, ms, s)",
       ),
-    },
+    }.describe("Instructs the MCP Server to write new time series data to a specified InfluxDB bucket. Provide measurement name, tags, fields, and timestamps as needed."),
     writeData,
   );
   server.tool(
@@ -83,7 +83,7 @@ const createMcpServer = () => {
     {
       org: z.string().describe("The organization name"),
       query: z.string().describe("Flux query string"),
-    },
+    }.describe("Requests the MCP Server to retrieve time series data from InfluxDB using a flexible Flux query interface."),
     queryData,
   );
   server.tool(
@@ -93,7 +93,7 @@ const createMcpServer = () => {
       orgID: z.string().describe("The organization ID"),
       retentionPeriodSeconds: z.number().optional().describe(
         "Retention period in seconds (optional)",
-      ),
+      ).describe("Directs the MCP Server to create a new bucket in InfluxDB for organizing time series data. Useful for segmenting data for different AI tasks or projects."),
     },
     createBucket,
   );
@@ -103,7 +103,7 @@ const createMcpServer = () => {
       name: z.string().describe("The organization name"),
       description: z.string().optional().describe(
         "Organization description (optional)",
-      ),
+      ).describe("Commands the MCP Server to create a new organization in InfluxDB. Use this to set up isolated environments for different teams, projects, or autonomous agents."),
     },
     createOrg,
   );
