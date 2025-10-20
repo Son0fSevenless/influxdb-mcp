@@ -5,8 +5,9 @@ FROM node:lts-alpine
 WORKDIR /app
 
 # Install dependencies
-COPY package*.json ./
+# COPY package*.json ./
 # RUN npm ci --production
+COPY package.json ./
 RUN npm ci
 
 # Copy source code
