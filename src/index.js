@@ -68,44 +68,43 @@ const createMcpServer = () => {
   // Register tools
   server.tool(
     "write-data",
-    {
-      org: z.string().describe("The organization name"),
-      bucket: z.string().describe("The bucket name"),
-      data: z.string().describe("Data in InfluxDB line protocol format"),
-      precision: z.enum(["ns", "us", "ms", "s"]).optional().describe(
-        "Timestamp precision (ns, us, ms, s)",
-      ),
-    }.describe("Instructs the MCP Server to write new time series data to a specified InfluxDB bucket. Provide measurement name, tags, fields, and timestamps as needed."),
-    writeData,
+    z.object({
+      org: z.string().describe("The organization name to write data to."),
+      bucket: z.string().describe("The bucket name where the data will be stored."),
+      data: z.string().describe("Data in InfluxDB line protocol format. Use this to store time series observations, metrics, or events generated or received by the AI."),
+      precision: z.enum(["ns", "us", "ms", "s"])
+        .optional()
+        .describe("Timestamp precision for the data: ns (nanoseconds), us (microseconds), ms (milliseconds), or s (seconds)."),
+    }).describe("Instructs the MCP Server to write new time series data to a specified InfluxDB bucket. Provide measurement name, tags, fields, and timestamps as needed."),
+    writeData
   );
+  
   server.tool(
     "query-data",
-    {
-      org: z.string().describe("The organization name"),
-      query: z.string().describe("Flux query string"),
-    }.describe("Requests the MCP Server to retrieve time series data from InfluxDB using a flexible Flux query interface."),
-    queryData,
+    z.object({
+      org: z.string().describe("The organization name to query from."),
+      query: z.string().describe("Flux query string specifying measurements, filters, and time range. Use this to analyze historical data, detect trends, or inform AI decision-making."),
+    }).describe("Requests the MCP Server to retrieve time series data from InfluxDB using a flexible Flux query interface."),
+    queryData
   );
+  
   server.tool(
     "create-bucket",
-    {
-      name: z.string().describe("The bucket name"),
-      orgID: z.string().describe("The organization ID"),
-      retentionPeriodSeconds: z.number().optional().describe(
-        "Retention period in seconds (optional)",
-      ).describe("Directs the MCP Server to create a new bucket in InfluxDB for organizing time series data. Useful for segmenting data for different AI tasks or projects."),
-    },
-    createBucket,
+    z.object({
+      name: z.string().describe("The name of the new bucket to create."),
+      orgID: z.string().describe("The organization ID under which to create the bucket."),
+      retentionPeriodSeconds: z.number().optional().describe("Optional retention period in seconds for the bucket's data."),
+    }).describe("Directs the MCP Server to create a new bucket in InfluxDB for organizing time series data. Useful for segmenting data for different AI tasks or projects."),
+    createBucket
   );
+  
   server.tool(
     "create-org",
-    {
-      name: z.string().describe("The organization name"),
-      description: z.string().optional().describe(
-        "Organization description (optional)",
-      ).describe("Commands the MCP Server to create a new organization in InfluxDB. Use this to set up isolated environments for different teams, projects, or autonomous agents."),
-    },
-    createOrg,
+    z.object({
+      name: z.string().describe("The name of the new organization."),
+      description: z.string().optional().describe("Optional description for the organization."),
+    }).describe("Commands the MCP Server to create a new organization in InfluxDB. Use this to set up isolated environments for different teams, projects, or autonomous agents."),
+    createOrg
   );
 
   // Register prompts
